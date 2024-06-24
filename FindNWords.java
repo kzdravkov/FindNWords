@@ -50,9 +50,8 @@ public class FindNWords {
             return false;
         // Word is not in the caches, check if it's a real word
         else if(rawSet.contains(word)) {
-            for(String smallerWord : generateSmallerWords(word)) {
-                boolean valid = validateWord(smallerWord);
-                if(valid) {
+            for(String smallerWord : generateSubwords(word)) {
+                if(validateWord(smallerWord)) {
                     // There exists a valid subword that reached the recursion end, add it to the validated cache
                     validWordsCache.add(word);
                     return true;
@@ -66,13 +65,16 @@ public class FindNWords {
             return false;
     }
 
-    static Set<String> generateSmallerWords(String s) {
-        Set<String> smallerWords = new HashSet<>(s.length());
-        for(Character c : s.toCharArray()) {
-            smallerWords.add(new String(s.replaceFirst(c + "", "")));
+    static Set<String> generateSubwords(String s) {
+        Set<String> subwords = new HashSet<>();
+
+        for(int i = 0; i < s.length(); i ++) {
+            StringBuilder builder = new StringBuilder(s);
+            builder.deleteCharAt(i);
+            subwords.add(builder.toString());
         }
 
-        return smallerWords;
+        return subwords;
     }
 
     static private List<String> loadAllWords() throws Exception {
